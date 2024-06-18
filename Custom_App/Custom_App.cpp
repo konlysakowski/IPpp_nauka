@@ -1,4 +1,145 @@
 #include <iostream>
+#include <string>
+
+
+using namespace std;
+using trescTekstowa = char[500];
+
+enum class typZadania
+{
+    latwe = 0,
+    podstawowe = 1,
+    ambitne = 2,
+};
+
+struct Przedmiot
+{
+    trescTekstowa nazwaPrzedmiotu;
+};
+
+struct Zadanie
+{
+    trescTekstowa tresc;
+    int liczbaPunktow;
+    typZadania rodzaj;
+    Przedmiot nazwa; //0 - matematyka, 1 - programowanie, 2 - prace domowe 
+};
+
+void wypelnianie(Zadanie& z, const char* tr, int pkt, typZadania typ, Przedmiot naz)
+{
+    strcpy(z.tresc, tr);
+    z.liczbaPunktow = pkt;
+    z.rodzaj = typ;
+    z.nazwa = naz;
+}
+
+void wypisywanie(Zadanie& z)
+{
+    cout << "Treœæ zadania:\t" << z.tresc << endl
+        << "Liczba punktów:\t" << z.liczbaPunktow << endl;
+    cout << "Typ zadania:\t" << static_cast<int>(z.rodzaj) << endl
+        << "Nazwa przedmiotu:\t" << z.nazwa.nazwaPrzedmiotu << endl;
+}
+
+int zadaniaONajdluzszejTresci(Zadanie* tablica, const char* przedmiot)
+// Funkcja przyjmuje tablice zadan i przedmiot 
+// Ma wyznaczyæ jakiego typu jest zadnie z tego przedmiotu,
+// które ma najdluzsza tresc
+// UWAGA: funkcja zawiera bledy czasu kompilacji i czasu wykonania
+{
+    int typPrzedmiotu = 0, maxDlugosc = 0;
+
+    for (int i = 0; i < sizeof(tablica); i++)
+    {
+        if (tablica[i].nazwa.nazwaPrzedmiotu == przedmiot)
+        {
+            if (strlen(tablica[i].tresc) > maxDlugosc)
+            {
+                maxDlugosc = strlen(tablica[i].tresc);
+                typPrzedmiotu = static_cast<int>(tablica[i].rodzaj);
+            }
+        }
+    }
+}
+
+int main()
+{
+
+    setlocale(LC_ALL, "");
+    Przedmiot nazwa;
+
+    Zadanie zadania[] = {
+        {"Oblicz srednia", 2, typZadania::latwe, {"Matematyka"}},
+        {"Znajdz x w rownaniu", 5, typZadania::podstawowe, {"Matematyka"}},
+        {"Pokoloruj drwala... proceduralnie", 30, typZadania::ambitne, {"Programowanie"}},
+        {"Oblicz ca³ke", 10, typZadania::podstawowe, {"Matematyka"}},
+        {"Wynies smieci", 1, typZadania::latwe, {"Prace domowe"}},
+        {"Kup flaszke dla profesora", 10, typZadania::ambitne, {"Matematyka"}},
+        {"Napisz program komputerowy", 20, typZadania::ambitne, {"Programowanie"}}
+    };
+
+    cout << zadaniaONajdluzszejTresci(zadania, "Programowanie") << endl;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+#include <iostream>
 #include <cstdlib>
 #include <ctime>
 #include <vector>
@@ -199,7 +340,7 @@ int main() {
     return 0;
 }
 
-
+*/
 
 
 

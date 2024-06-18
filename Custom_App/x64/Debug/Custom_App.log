@@ -1,3 +1,4 @@
 ﻿  Custom_App.cpp
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\Custom_App\Custom_App.cpp(185,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-  Custom_App.vcxproj -> C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\Custom_App\x64\Debug\Custom_App.exe
+C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\Custom_App\Custom_App.cpp(30,5): error C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\Custom_App\Custom_App.cpp(58,36): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\Custom_App\Custom_App.cpp(69,15): warning C4101: 'nazwa': unreferenced local variable
