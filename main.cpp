@@ -23,25 +23,40 @@ public:
 class KontoBankowe
 {
 protected:
-	char numerKonta[26];
+	char numerKonta[27];
 	double stanKonta;
 	Aktywnosc aktywnosc;
 	Klient* wlasciciel; 
 	static int aktywneKonta;
 
-	bool czyNumerKontaPoprawny(const char* numer) { return strlen(numer) == 26; }
+	bool czyNumerKontaPoprawny(const char* numer) { if (strlen(numer) != 26){ return true; }else{ return false; } }
 public:
 	void setNumerKonta(const char* numer) 
 	{ 
-		if (!czyNumerKontaPoprawny(numer))
+		if (czyNumerKontaPoprawny(numer))
 		{
 			throw invalid_argument("Niepoprawny numer konta");
 		}
 
-		strncpy(numerKonta, numer, 26); 
+		strncpy(numerKonta, numer, 27); 
+		
 	}
 	void setStanKonta(double stan) { stanKonta = stan; }
-	void setAktywnosc(Aktywnosc _aktywnosc) { aktywnosc = _aktywnosc; }
+	void setAktywnosc(Aktywnosc _aktywnosc) 
+	{ 
+		if (aktywnosc != _aktywnosc)
+		{
+			if (_aktywnosc == Aktywnosc::aktywny)
+			{
+				aktywneKonta++;
+			}
+			else
+			{
+				aktywneKonta--;
+			}
+			aktywnosc = _aktywnosc;
+		}
+	}
 	void setWlasciciel(Klient* _wlasciciel) { wlasciciel = _wlasciciel; }
 
 	const char* getNumerKonta() { return numerKonta; }
@@ -50,14 +65,12 @@ public:
 	Klient* getWlasciciel() { return wlasciciel; }
 
 	KontoBankowe(const char* numer, double stan, Aktywnosc aktyw, Klient* wlasc)
-		:stanKonta(stan), aktywnosc(aktyw), wlasciciel(wlasc)
 	{
-		if (!czyNumerKontaPoprawny(numer))
-		{
-			throw invalid_argument("Niepoprawny numer konta");
-		}
 
 		setNumerKonta(numer);
+		setStanKonta(stan);
+		setAktywnosc(aktyw);
+		setWlasciciel(wlasc);
 
 		if (aktywnosc == Aktywnosc::aktywny)
 		{
@@ -99,6 +112,7 @@ ostream& operator<<(ostream& os, const KontoBankowe& k)
 	{
 		os << "[" << k.numerKonta << "] " << "NIEAKTYWNE" << endl;
 	}
+	return os;
 }
 
 class KontoOszczednosciowe : public KontoBankowe
@@ -135,10 +149,14 @@ int main()
 {
 	Klient klient1("Mateusz Janek"), klient2("Tadeusz Norek");
 
-	KontoBankowe k1("2211112223333444555326666", 1500.45, Aktywnosc::aktywny, klient1);
+	KontoBankowe k1("92345678901234567890123453", 1500.23, Aktywnosc::aktywny, klient1);
+	KontoBankowe k2("12546786543247890756432456", 12342.45, Aktywnosc::aktywny, klient2);
 
+	cout << k1 << endl;
+	cout << k2 << endl; 
 
-	
+	k1.prognoza(); 
+	k2.prognoza(); 
 
 }
 
