@@ -160,3 +160,235 @@ int main()
 
 }
 
+//WERSJA 2 KOLOKWIUM PRZYKLADOWE
+
+#include <iostream>
+using namespace std;
+const int ROZMIAR_NUMERU = 26;
+
+class klient;
+class konto_bankowe;
+enum class aktywnosc
+{
+	aktywne,
+	nieaktywne
+};
+
+class Klient
+{
+	char m_nazwa[20];
+public:
+	void noweKonto();
+};
+class konto_bankowe
+{
+protected:
+	static int s_aktywne_konta;
+	char m_numer_konta[ROZMIAR_NUMERU];
+	aktywnosc m_stan;
+	double m_fundusze;
+	Klient* m_wlasciciel;
+public:
+	virtual double stanZaRok()
+	{
+		return m_fundusze;
+	}
+	char* getNumerKonta()
+	{
+		return m_numer_konta;
+	}
+	aktywnosc getStan()
+	{
+		return m_stan;
+	}
+	double getFundusze()
+	{
+		return m_fundusze;
+	}
+	Klient* getWlasciciel()
+	{
+		return m_wlasciciel;
+	}
+	void setNumerKonta(const char* numer)
+	{
+		for (int i = 0; i < ROZMIAR_NUMERU; i++)
+		{
+			//Na wypadek gdyby ktoœ poda³ za krótki numer
+			if (numer[i] == NULL) { m_numer_konta[i] = 0; }
+			m_numer_konta[i] = numer[i];
+		}
+	}
+	void setStan(aktywnosc aktywnosc)
+	{
+		// sprawdzam czy ktoœ nie nadpisuje poprzedniej wartoœci
+		if (aktywnosc == aktywnosc::aktywne && m_stan != aktywnosc)
+		{
+			s_aktywne_konta++;
+		}
+		else if (aktywnosc == aktywnosc::nieaktywne && m_stan != aktywnosc)
+		{
+			s_aktywne_konta--;
+		}
+		m_stan = aktywnosc;
+	}
+	void setFundusze(double fundusze)
+	{
+		if (fundusze < 0)
+		{
+			cout << "Nie mozesz wprowadzic ujemnego stanu konta!";
+			m_fundusze = 0;
+		}
+		else { m_fundusze = fundusze; }
+	}
+	void setWlasciciel(Klient* wlasciciel)
+	{
+		m_wlasciciel = wlasciciel;
+	}
+	operator double()
+	{
+		return m_fundusze;
+	}
+	konto_bankowe& operator +=(double liczba)
+	{
+		m_fundusze += liczba;
+		return *this;
+	}
+	konto_bankowe(const char* numer, aktywnosc aktywnosc, double fundusze, Klient* wlasciciel)
+	{
+		setNumerKonta(numer);
+		setStan(aktywnosc);
+		setFundusze(fundusze);
+		setWlasciciel(wlasciciel);
+	}
+	~konto_bankowe()
+	{
+		s_aktywne_konta--;
+	}
+	friend ostream& operator<<(ostream& s, const konto_bankowe&);
+};
+void Klient::noweKonto()
+{
+	konto_bankowe("00000000000000000000000000", aktywnosc::aktywne, 0, this);
+}
+ostream& operator<<(ostream& s, const konto_bankowe& k)
+{
+	if (k.m_stan == aktywnosc::aktywne)
+	{
+		s << k.m_numer_konta << " " << k.m_wlasciciel << " : " << k.m_fundusze;
+		return s;
+	}
+	else {
+		s << k.m_numer_konta << " NIEAKTYWNE";
+		return s;
+	}
+}
+class konto_oszczedniosciowe : public konto_bankowe
+{
+	double m_stopa_oprocentowania;
+
+public:
+
+	void setStopa(double stopa)
+	{
+		m_stopa_oprocentowania = stopa;
+	}
+	konto_oszczedniosciowe(konto_bankowe knt, double stopa) : konto_bankowe(knt)
+	{
+		setStopa(stopa);
+	}
+	double stanZaRok() override
+	{
+		double poczatkowy = m_fundusze;
+		for (int i = 1; i <= 12; i++)
+		{
+			poczatkowy = poczatkowy + (poczatkowy * m_stopa_oprocentowania);
+		}
+		return poczatkowy;
+	}
+};
+int konto_bankowe::s_aktywne_konta = 0;
+int main()
+{
+
+}
+
+
+// WERSJA 3 KOLOKWIUM PRZYKLAD
+#include <iostream>
+enum class dopuszczenie { dopuszczony, niedopuszczony };
+using namespace std;
+class wlasciciel
+{
+	char m_nazwisko[20];
+
+public:
+	wlasciciel(const char* nazwisko)
+	{
+		memcpy(m_nazwisko, nazwisko, sizeof(char) * 20);
+	}
+};
+class samochod
+{
+protected:
+	char m_numrej_litery[3];
+	int m_numrej_cyfry[5];
+	int m_licznik;
+	dopuszczenie m_stan;
+	wlasciciel* m_posiadacz;
+	static int s_ostatni_numer[5];
+public:
+	void setLicznik(int licznik)
+	{
+		if (licznik < 0) { m_licznik = 0; }
+		else { m_licznik = licznik; }
+	}
+	int getLicznik()
+	{
+		return m_licznik;
+	}
+	void setNumRej(const char* num_rej)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			if (num_rej[i] >= 65 && num_rej[i] <= 90)
+			{
+				m_numrej_litery[i] = num_rej[i];
+			}
+			else if (num_rej[i] >= 97 && num_rej[i] <= 122)
+			{
+				m_numrej_litery[i] = num_rej[i] - 32;
+			}
+			else
+			{
+				cout << "Bledna rejestracja" << endl;
+				memcpy(m_numrej_litery, "ZZZ", sizeof(char) * 3);
+			}
+		}
+	}
+	void setStan(dopuszczenie stan)
+	{
+		m_stan = stan;
+	}
+	dopuszczenie getStan()
+	{
+		return m_stan;
+	}
+	void setWlasciciel(wlasciciel* wlasciciel)
+	{
+		m_posiadacz = wlasciciel;
+	}
+	wlasciciel* getWlasciciel()
+	{
+		return m_posiadacz;
+	}
+};
+class samochod_elektryczny : public samochod
+{
+	double bateria;
+
+};
+int samochod::s_ostatni_numer[5] = {};
+int main()
+{
+
+}
