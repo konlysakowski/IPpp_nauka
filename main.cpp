@@ -392,3 +392,153 @@ int main()
 {
 
 }
+
+
+//WERSJA 4 PRZYKLADOWE
+
+#include <iostream>
+#include <stdexcept>
+#include <cstring>
+
+using namespace std;
+
+// Klasa Autor
+class Autor {
+	char nazwisko[100];
+public:
+	Autor(const char* nazwisko) {
+		strncpy(this->nazwisko, nazwisko, sizeof(this->nazwisko) - 1);
+		this->nazwisko[sizeof(this->nazwisko) - 1] = '\0';
+	}
+	const char* getNazwisko() const { return nazwisko; }
+};
+
+// Klasa Ksiazka
+class Ksiazka {
+	char tytul[100];
+	int liczbaStron;
+	bool dostepna;
+	Autor* autor;
+
+	static Ksiazka* wzorcowaKsiazka;
+
+public:
+	// Konstruktor argumentowy
+	Ksiazka(const char* tytul, int liczbaStron, bool dostepna, Autor* autor)
+		: liczbaStron(liczbaStron), dostepna(dostepna), autor(autor) {
+		if (liczbaStron <= 0) throw invalid_argument("Liczba stron musi byæ dodatnia");
+		if (!autor) throw invalid_argument("Ksi¹¿ka musi mieæ przypisanego autora");
+		strncpy(this->tytul, tytul, sizeof(this->tytul) - 1);
+		this->tytul[sizeof(this->tytul) - 1] = '\0';
+	}
+
+	// Konstruktor kopiuj¹cy
+	Ksiazka(const Ksiazka& other)
+		: liczbaStron(other.liczbaStron), dostepna(other.dostepna) {
+		strncpy(this->tytul, other.tytul, sizeof(this->tytul) - 1);
+		this->tytul[sizeof(this->tytul) - 1] = '\0';
+		autor = new Autor(*other.autor);  // Tworzymy kopiê autora
+	}
+
+	// Destruktor
+	~Ksiazka() {
+		delete autor;  // Usuwamy autora, aby unikn¹æ wycieku pamiêci
+	}
+
+	// Konstruktor domyœlny
+	Ksiazka() {
+		if (!wzorcowaKsiazka) throw runtime_error("Brak wzorcowej ksi¹¿ki");
+		*this = *wzorcowaKsiazka;
+	}
+
+	// Setery i getery
+	void setTytul(const char* tytul) {
+		strncpy(this->tytul, tytul, sizeof(this->tytul) - 1);
+		this->tytul[sizeof(this->tytul) - 1] = '\0';
+	}
+	const char* getTytul() const { return tytul; }
+
+	void setLiczbaStron(int liczbaStron) {
+		if (liczbaStron <= 0) throw invalid_argument("Liczba stron musi byæ dodatnia");
+		this->liczbaStron = liczbaStron;
+	}
+	int getLiczbaStron() const { return liczbaStron; }
+
+	void setDostepna(bool dostepna) { this->dostepna = dostepna; }
+	bool isDostepna() const { return dostepna; }
+
+	void setAutor(Autor* autor) {
+		if (!autor) throw invalid_argument("Ksi¹¿ka musi mieæ przypisanego autora");
+		delete this->autor;  // Usuwamy starego autora, aby unikn¹æ wycieku pamiêci
+		this->autor = new Autor(*autor);  // Tworzymy kopiê nowego autora
+	}
+	Autor* getAutor() const { return autor; }
+
+	// Statyczne wskazanie instancji wzorcowej
+	static void setWzorcowaKsiazka(Ksiazka* ksiazka) { wzorcowaKsiazka = ksiazka; }
+
+	// Obliczanie ceny ksi¹¿ki
+	virtual double obliczCene() const {
+		return static_cast<double>(liczbaStron);
+	}
+
+	// Konwersja Ksiazka ? const char*
+	operator const char* () const {
+		char* opis = new char[300];
+		snprintf(opis, 300, "Tytul: %s, Liczba stron: %d, Dostepnosc: %s, Autor: %s",
+			tytul, liczbaStron, (dostepna ? "dostepna" : "niedostepna"), autor->getNazwisko());
+		return opis;
+	}
+
+	// Operator ==
+	bool operator==(const Ksiazka& other) const {
+		return liczbaStron == other.liczbaStron &&
+			strcmp(autor->getNazwisko(), other.autor->getNazwisko()) == 0 &&
+			dostepna == other.dostepna;
+	}
+};
+
+Ksiazka* Ksiazka::wzorcowaKsiazka = nullptr;
+
+// Klasa EBook
+class EBook : public Ksiazka {
+	double rozmiarMB;
+
+public:
+	EBook(const char* tytul, int liczbaStron, bool dostepna, Autor* autor, double rozmiarMB)
+		: Ksiazka(tytul, liczbaStron, dostepna, autor), rozmiarMB(rozmiarMB) {
+		if (rozmiarMB <= 0) throw invalid_argument("Rozmiar eBooka musi byæ dodatni");
+	}
+
+	void setRozmiarMB(double rozmiarMB) {
+		if (rozmiarMB <= 0) throw invalid_argument("Rozmiar eBooka musi byæ dodatni");
+		this->rozmiarMB = rozmiarMB;
+	}
+	double getRozmiarMB() const { return rozmiarMB; }
+
+	double obliczCene() const override {
+		return Ksiazka::obliczCene() * 0.75;
+	}
+};
+
+int main() {
+	try {
+		Autor* autor = new Autor("Kowalski");
+		Ksiazka* ksiazkaWzorcowa = new Ksiazka("Wzorcowy Tytul", 300, true, autor);
+		Ksiazka::setWzorcowaKsiazka(ksiazkaWzorcowa);
+
+		Ksiazka ksiazkaDomyslna;
+		cout << static_cast<const char*>(ksiazkaDomyslna) << endl;
+		delete[] static_cast<const char*>(ksiazkaDomyslna);  // Pamiêtaj o usuniêciu zaalokowanej pamiêci
+
+		EBook ebook("Tytul Ebooka", 200, true, autor, 1.5);
+		cout << "Cena ebooka: " << ebook.obliczCene() << " PLN" << endl;
+
+		delete autor;
+		delete ksiazkaWzorcowa;
+	}
+	catch (const exception& e) {
+		cerr << "B³¹d: " << e.what() << endl;
+	}
+
+	return 0;
