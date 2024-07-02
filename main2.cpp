@@ -163,3 +163,473 @@ int main()
 {
 
 }
+
+
+
+
+
+
+
+
+//WERSJA 2 TELEFON S4
+
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+class Operator {
+private:
+    char name[50];
+public:
+    Operator(const char* name) {
+        strncpy(this->name, name, 49);
+        this->name[49] = '\0';
+    }
+
+    const char* getName() const {
+        return name;
+    }
+};
+
+class Telefon {
+public:
+    enum Stan { Wlaczony, Wylaczony, Zablokowany };
+
+private:
+    char numer[12];
+    int stanBaterii; // 0-100%
+    Stan stan;
+    const Operator& operator_;
+    const int pin;
+    static int licznikZablokowanych;
+
+    void validateBateria(int bateria) {
+        if (bateria < 0 || bateria > 100) {
+            throw invalid_argument("Stan baterii musi byæ w przedziale 0-100%");
+        }
+    }
+
+    void validateNumer(const char* numer) {
+        if (strlen(numer) != 11 || numer[3] != '-' || numer[7] != '-') {
+            throw invalid_argument("Numer musi byæ w formacie XXX-XXX-XXX");
+        }
+    }
+
+public:
+    Telefon(const char* numer, int stanBaterii, Stan stan, const Operator& operator_, int pin)
+        : operator_(operator_), pin(pin) {
+        validateNumer(numer);
+        validateBateria(stanBaterii);
+        strncpy(this->numer, numer, 12);
+        this->stanBaterii = stanBaterii;
+        this->stan = (stan == Zablokowany) ? Wylaczony : stan;
+    }
+
+    const char* getNumer() const {
+        return numer;
+    }
+
+    void setNumer(const char* numer) {
+        validateNumer(numer);
+        strncpy(this->numer, numer, 12);
+    }
+
+    int getStanBaterii() const {
+        return stanBaterii;
+    }
+
+    void setStanBaterii(int stanBaterii) {
+        validateBateria(stanBaterii);
+        this->stanBaterii = stanBaterii;
+        if (this->stanBaterii == 0) {
+            setStan(Wylaczony);
+        }
+    }
+
+    Stan getStan() const {
+        return stan;
+    }
+
+    void setStan(Stan stan, int pin = -1) {
+        if (this->stan == Zablokowany && stan != Zablokowany && pin != this->pin) {
+            throw invalid_argument("Niepoprawny PIN");
+        }
+        if (this->stan == Zablokowany && stan != Zablokowany) {
+            licznikZablokowanych--;
+        }
+        else if (this->stan != Zablokowany && stan == Zablokowany) {
+            licznikZablokowanych++;
+        }
+        this->stan = stan;
+    }
+
+    const Operator& getOperator() const {
+        return operator_;
+    }
+
+    static int getLicznikZablokowanych() {
+        return licznikZablokowanych;
+    }
+
+    virtual int czasDzialania() const {
+        return stanBaterii * 20; // 20 minut na ka¿dy procent baterii
+    }
+
+    virtual ~Telefon() {
+        if (stan == Zablokowany) {
+            licznikZablokowanych--;
+        }
+    }
+
+    Telefon& operator+=(int doladowanie) {
+        setStanBaterii(stanBaterii + doladowanie);
+        return *this;
+    }
+};
+
+int Telefon::licznikZablokowanych = 0;
+
+class SystemOperacyjny {
+private:
+    char nazwa[50];
+    double kosztObliczeniowy; // 0.0 - 1.0
+
+    void validateKosztObliczeniowy(double koszt) {
+        if (koszt < 0.0 || koszt > 1.0) {
+            throw invalid_argument("Koszt obliczeniowy musi byæ w przedziale 0.0 - 1.0");
+        }
+    }
+
+public:
+    SystemOperacyjny(const char* nazwa, double kosztObliczeniowy) {
+        validateKosztObliczeniowy(kosztObliczeniowy);
+        strncpy(this->nazwa, nazwa, 49);
+        this->nazwa[49] = '\0';
+        this->kosztObliczeniowy = kosztObliczeniowy;
+    }
+
+    const char* getNazwa() const {
+        return nazwa;
+    }
+
+    double getKosztObliczeniowy() const {
+        return kosztObliczeniowy;
+    }
+};
+
+class Smartfon : public Telefon {
+private:
+    SystemOperacyjny system;
+
+public:
+    Smartfon(const char* numer, int stanBaterii, Stan stan, const Operator& operator_, int pin, const SystemOperacyjny& system)
+        : Telefon(numer, stanBaterii, stan, operator_, pin), system(system) {}
+
+    const SystemOperacyjny& getSystem() const {
+        return system;
+    }
+
+    void setSystem(const SystemOperacyjny& system) {
+        this->system = system;
+    }
+
+    int czasDzialania() const override {
+        return getStanBaterii() * (20 - 10 * system.getKosztObliczeniowy());
+    }
+};
+
+Smartfon konwertujNaSmartfon(const Telefon& telefon, const SystemOperacyjny& system) {
+    return Smartfon(telefon.getNumer(), telefon.getStanBaterii(), telefon.getStan(), telefon.getOperator(), 0, system);
+}
+
+
+
+
+
+
+
+
+
+
+
+//WERSJA 3 S6
+
+#include <iostream>
+#include <cstring>
+#include <iomanip>
+
+using namespace std;
+
+class Wlasciciel {
+private:
+    char nazwisko[50];
+public:
+    Wlasciciel(const char* nazwisko) {
+        strncpy(this->nazwisko, nazwisko, 49);
+        this->nazwisko[49] = '\0';
+    }
+
+    const char* getNazwisko() const {
+        return nazwisko;
+    }
+};
+
+class Samochod {
+public:
+    enum StanDopuszczenia { Dopuszczony, Niedopuszczony };
+
+private:
+    char numerRejestracyjny[10];
+    int licznik; // stan licznika
+    StanDopuszczenia stan;
+    const Wlasciciel& wlasciciel;
+    static int ostatniNumerRejestracyjny;
+
+    void validateNumerRejestracyjny(const char* numer) {
+        if (strlen(numer) != 8 || !isalpha(numer[0]) || !isalpha(numer[1]) || !isalpha(numer[2]) || numer[3] != '-') {
+            throw invalid_argument("Numer rejestracyjny musi byæ w formacie XXX-YYYYY");
+        }
+    }
+
+    void generateNumerRejestracyjny(const char* xxx) {
+        validateNumerRejestracyjny(xxx);
+        strncpy(numerRejestracyjny, xxx, 4);
+        snprintf(numerRejestracyjny + 4, 6, "%05d", ++ostatniNumerRejestracyjny);
+    }
+
+public:
+    Samochod(const char* xxx, int licznik, StanDopuszczenia stan, const Wlasciciel& wlasciciel)
+        : wlasciciel(wlasciciel) {
+        generateNumerRejestracyjny(xxx);
+        this->licznik = licznik;
+        this->stan = stan;
+    }
+
+    const char* getNumerRejestracyjny() const {
+        return numerRejestracyjny;
+    }
+
+    void setNumerRejestracyjny(const char* xxx) {
+        generateNumerRejestracyjny(xxx);
+    }
+
+    int getLicznik() const {
+        return licznik;
+    }
+
+    void setLicznik(int licznik) {
+        this->licznik = licznik;
+    }
+
+    StanDopuszczenia getStan() const {
+        return stan;
+    }
+
+    void setStan(StanDopuszczenia stan) {
+        this->stan = stan;
+    }
+
+    const Wlasciciel& getWlasciciel() const {
+        return wlasciciel;
+    }
+
+    virtual int zasieg() const {
+        return 800; // Sta³y zasiêg dla zwyk³ego samochodu
+    }
+
+    operator double() const {
+        double wspSparw = (stan == Dopuszczony) ? 1.0 : 0.2;
+        double wartosc = (10000.0 - 0.1 * licznik) * wspSparw; // Zak³adaj¹c WAR_POCZ = 10000
+        return max(wartosc, 400.0);
+    }
+
+    bool operator==(const Samochod& other) const {
+        return strncmp(numerRejestracyjny, other.numerRejestracyjny, 3) == 0 && abs(licznik - other.licznik) <= 10;
+    }
+};
+
+int Samochod::ostatniNumerRejestracyjny = 0;
+
+class SamochodElektryczny : public Samochod {
+private:
+    int stanBaterii; // 0-100%
+
+    void validateStanBaterii(int stanBaterii) {
+        if (stanBaterii < 0 || stanBaterii > 100) {
+            throw invalid_argument("Stan baterii musi byæ w przedziale 0-100%");
+        }
+    }
+
+public:
+    SamochodElektryczny(const char* xxx, int licznik, StanDopuszczenia stan, const Wlasciciel& wlasciciel, int stanBaterii)
+        : Samochod(xxx, licznik, stan, wlasciciel) {
+        validateStanBaterii(stanBaterii);
+        this->stanBaterii = stanBaterii;
+    }
+
+    int getStanBaterii() const {
+        return stanBaterii;
+    }
+
+    void setStanBaterii(int stanBaterii) {
+        validateStanBaterii(stanBaterii);
+        this->stanBaterii = stanBaterii;
+    }
+
+    int zasieg() const override {
+        return static_cast<int>(2.5 * stanBaterii);
+    }
+};
+
+int main() {
+    Wlasciciel wlasciciel1("Nowak");
+    Samochod s1("ABC-", 12000, Samochod::Dopuszczony, wlasciciel1);
+    SamochodElektryczny se1("XYZ-", 5000, Samochod::Dopuszczony, wlasciciel1, 80);
+
+    cout << "Numer rejestracyjny s1: " << s1.getNumerRejestracyjny() << endl;
+    cout << "Licznik s1: " << s1.getLicznik() << endl;
+    cout << "Zasieg s1: " << s1.zasieg() << " km" << endl;
+    cout << "Wartosc s1: " << fixed << setprecision(2) << double(s1) << " PLN" << endl;
+
+    cout << "Numer rejestracyjny se1: " << se1.getNumerRejestracyjny() << endl;
+    cout << "Licznik se1: " << se1.getLicznik() << endl;
+    cout << "Stan baterii se1: " << se1.getStanBaterii() << "%" << endl;
+    cout << "Zasieg se1: " << se1.zasieg() << " km" << endl;
+    cout << "Wartosc se1: " << fixed << setprecision(2) << double(se1) << " PLN" << endl;
+
+    // Porównanie samochodów
+    Samochod s2("ABC-", 12005, Samochod::Dopuszczony, wlasciciel1);
+    cout << "Czy s1 i s2 s¹ identyczne? " << (s1 == s2 ? "Tak" : "Nie") << endl;
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+//WERSJA 4 S1
+
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+class Autor {
+    char nazwisko[50];
+public:
+    Autor(const char* nazwisko) {
+        strncpy(this->nazwisko, nazwisko, 50);
+    }
+    const char* getNazwisko() const {
+        return nazwisko;
+    }
+};
+
+class Ksiazka {
+    char tytul[100];
+    int liczbaStron;
+    bool dostepnosc;
+    Autor autor;
+    static Ksiazka* instancjaWzorcowa;
+
+public:
+    // Konstruktor domyœlny, kopiuj¹cy instancjê wzorcow¹
+    Ksiazka() {
+        if (!instancjaWzorcowa) {
+            throw logic_error("Brak zdefiniowanej instancji wzorcowej!");
+        }
+        strncpy(tytul, instancjaWzorcowa->tytul, 100);
+        liczbaStron = instancjaWzorcowa->liczbaStron;
+        dostepnosc = instancjaWzorcowa->dostepnosc;
+        autor = instancjaWzorcowa->autor;
+    }
+
+    // Konstruktor argumentowy
+    Ksiazka(const char* tytul, int liczbaStron, bool dostepnosc, const Autor& autor)
+        : liczbaStron(liczbaStron), dostepnosc(dostepnosc), autor(autor) {
+        strncpy(this->tytul, tytul, 100);
+    }
+
+    // Setery i getery
+    void setTytul(const char* tytul) { strncpy(this->tytul, tytul, 100); }
+    const char* getTytul() const { return tytul; }
+
+    void setLiczbaStron(int liczbaStron) { this->liczbaStron = liczbaStron; }
+    int getLiczbaStron() const { return liczbaStron; }
+
+    void setDostepnosc(bool dostepnosc) { this->dostepnosc = dostepnosc; }
+    bool getDostepnosc() const { return dostepnosc; }
+
+    void setAutor(const Autor& autor) { this->autor = autor; }
+    Autor getAutor() const { return autor; }
+
+    // Ustawianie instancji wzorcowej
+    static void ustawInstancjeWzorcowa(Ksiazka* instancja) {
+        instancjaWzorcowa = instancja;
+    }
+
+    // Polimorficzna metoda obliczaj¹ca cenê ksi¹¿ki
+    virtual double cena() const {
+        return 1.0 * liczbaStron; // Cena w PLN
+    }
+
+    // Mechanizm konwersji Ksi¹¿ka ? const char*
+    operator const char* () const {
+        static char opis[256];
+        snprintf(opis, sizeof(opis), "Tytu³: %s, Liczba stron: %d, Dostêpnoœæ: %s, Autor: %s",
+            tytul, liczbaStron, dostepnosc ? "dostêpna" : "niedostêpna", autor.getNazwisko());
+        return opis;
+    }
+
+    // Operator ==
+    bool operator==(const Ksiazka& other) const {
+        return liczbaStron == other.liczbaStron && dostepnosc == other.dostepnosc &&
+            strcmp(autor.getNazwisko(), other.autor.getNazwisko()) == 0 &&
+            strcmp(tytul, other.tytul) == 0;
+    }
+};
+
+// Inicjalizacja statycznego pola klasy Ksiazka
+Ksiazka* Ksiazka::instancjaWzorcowa = nullptr;
+
+// Klasa EBook dziedzicz¹ca po Ksiazka
+class EBook : public Ksiazka {
+    double rozmiarMB;
+
+public:
+    EBook(const char* tytul, int liczbaStron, bool dostepnosc, const Autor& autor, double rozmiarMB)
+        : Ksiazka(tytul, liczbaStron, dostepnosc, autor), rozmiarMB(rozmiarMB) {}
+
+    // Przes³oniêta metoda obliczaj¹ca cenê eBooka
+    double cena() const override {
+        return 0.75 * Ksiazka::cena(); // eBook jest o 25% tañszy
+    }
+};
+
+int main() {
+    Autor autor("Kowalski");
+    Ksiazka ksiazka("Pan Tadeusz", 300, true, autor);
+    Ksiazka::ustawInstancjeWzorcowa(&ksiazka);
+
+    // Testowanie konwersji Ksi¹¿ka ? const char*
+    const char* opis = ksiazka;
+    cout << opis << endl;
+
+    // Testowanie operatora ==
+    Ksiazka ksiazka2("Dziady", 250, true, autor);
+    if (ksiazka == ksiazka2) {
+        cout << "Ksi¹¿ki s¹ identyczne." << endl;
+    }
+    else {
+        cout << "Ksi¹¿ki s¹ ró¿ne." << endl;
+    }
+
+    return 0;
+}
