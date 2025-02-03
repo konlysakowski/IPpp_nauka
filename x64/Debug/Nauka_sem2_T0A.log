@@ -1,24 +1,8 @@
 ﻿  zbior.cpp
 c1xx : fatal  error C1083: Cannot open source file: '..\..\..\..\Downloads\zbior.cpp': No such file or directory
-  main.cpp
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(45,9): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(74,15): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(131,15): warning C4553: '==': result of expression not used; did you intend '='?
   main2.cpp
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(16,3): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(186,9): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(224,9): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(235,9): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(307,9): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(338,33): warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(369,9): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(397,9): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(485,5): error C2084: function 'int main(void)' already has a body
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(162,5): message : see previous definition of 'main'
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(528,9): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(544,12): error C2512: 'Autor': no appropriate default constructor available
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(524,7): message : see declaration of 'Autor'
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(548,9): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(557,9): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(561,40): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(44,12): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(51,8): error C2382: 'Zbior::Zbior': redefinition; different exception specifications
+C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(19,5): message : see declaration of 'Zbior::Zbior'
+C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(97,33): warning C4244: 'argument': conversion from 'double' to 'size_t', possible loss of data
   Generating Code...

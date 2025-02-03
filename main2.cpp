@@ -1,3 +1,206 @@
+#include <new>
+#include <random>
+#include <cassert>
+#include <algorithm>
+#include <iostream>
+
+class Zbior
+{
+    size_t m_liczbaElementow = 0;
+    double* m_elementy = nullptr;
+    double m_dolnaGranica = 0;
+    double m_gornaGranica = 0;
+    void alokuj(int);
+    void zwolnij();
+public:
+    Zbior(size_t liczElem, double dGran, double gGran);
+    ~Zbior() {}
+
+    Zbior(Zbior&& orginal) noexcept;
+    Zbior& operator=(Zbior&& orginal);
+
+    friend void testTraceniaZasobu();
+    friend void testPrawidlowegoPrzypisaniaZasobu();
+
+    size_t getLiczbaElementow() const { return m_liczbaElementow; }
+
+};
+
+void Zbior::alokuj(int n)
+{
+    assert(n > 0);
+    m_elementy = new(std::nothrow) double[n] {};
+    m_liczbaElementow = n;
+
+}
+
+void Zbior::zwolnij()
+{
+    delete[] m_elementy;
+}
+
+Zbior::Zbior(size_t liczElem, double dGran, double gGran)
+{
+    alokuj(liczElem);
+    std::uniform_real_distribution<double> zakres(dGran, gGran);
+    std::random_device generator;
+    for (int elem = 0; elem < liczElem; elem++)
+        m_elementy[elem] = zakres(generator);
+}
+
+Zbior::Zbior(Zbior&& orginal) 
+    :m_liczbaElementow(orginal.m_liczbaElementow)
+{
+    this->m_elementy = orginal.m_elementy;
+    orginal.m_elementy = nullptr;
+    this->m_dolnaGranica = orginal.m_dolnaGranica;
+    orginal.m_dolnaGranica = NULL;
+    this->m_gornaGranica = orginal.m_gornaGranica;
+    orginal.m_gornaGranica = NULL;
+}
+
+Zbior& Zbior::operator=(Zbior&& orginal)
+{
+    if (this != &orginal)
+    {
+        if (this->m_elementy != nullptr)
+            zwolnij();
+        this->m_elementy = orginal.m_elementy;
+        this->m_liczbaElementow = orginal.m_liczbaElementow;
+        orginal.m_elementy = nullptr;
+        this->m_dolnaGranica = orginal.m_dolnaGranica;
+        orginal.m_dolnaGranica = NULL;
+        this->m_gornaGranica = orginal.m_gornaGranica;
+        orginal.m_gornaGranica = NULL;
+    }
+    return *this;
+}
+
+class Agregat
+{
+    std::vector<Zbior> zbiory; 
+public:
+    void dodajZbior(Zbior&& zbior)
+    {
+        zbiory.push_back(std::move(zbior));
+    }
+    void usunZbior()
+    {
+        if (!zbiory.empty())
+            zbiory.pop_back();
+    }
+    std::vector<Zbior> getZbiory() const { return zbiory; }
+};
+
+void testTraceniaZasobu()
+{
+    Zbior zb1(5, 0.0, 5.0), zb2(1.0, 0.0, 0.0);
+    zb2 = std::move(zb1);
+
+    if (zb1.m_elementy == nullptr && zb1.m_liczbaElementow == NULL && zb1.m_dolnaGranica == NULL && zb1.m_gornaGranica == NULL)
+        std::cerr << "Test tracenia zasobu: OK" << std::endl;
+    else
+        std::cerr << "Test tracenia zasobu: FAIL" << std::endl;
+}
+
+void testPrawidlowegoPrzypisaniaZasobu()
+{
+    Zbior zb1(5, 0.0, 10.0), zb2(1, 0.0, 0.0); 
+    zb2 = std::move(zb1);
+
+    if(zb2.m_elementy != nullptr && zb2.m_liczbaElementow == 5 && zb2.m_dolnaGranica == 0.0 && zb2.m_gornaGranica == 10.0)
+        std::cerr << "Test prawidlowego przypisania: OK" << std::endl;
+    else
+        std::cerr << "Test prawidlowego przypisania: FAIL" << std::endl;
+}
+
+
+class Funktor
+{
+    double m_dolnaGranica;
+    double m_gornaGranica;
+public:
+    Funktor(double dolGran, double gorGran) : m_dolnaGranica(dolGran), m_gornaGranica(gorGran) {}
+
+    bool operator()(const Zbior& zbior)
+    {
+        return  zbior.getLiczbaElementow() >= m_dolnaGranica && zbior.getLiczbaElementow() <= m_gornaGranica;
+    }
+};
+
+
+int main()
+{
+    Agregat agregat;
+    agregat.dodajZbior(Zbior(5, 0.0, 10.0));
+    agregat.dodajZbior(Zbior(8, 1.0, 12.0));
+    agregat.dodajZbior(Zbior(4, 2.0, 5.0));
+
+    Funktor funktor(2.0, 6.0);
+
+    int licznik = 0;
+    for (auto& zbior : agregat.getZbiory())
+        if (funktor(zbior))
+            licznik++;
+
+
+    std::cout << "Licznik: " << licznik << std::endl;
+
+
+    testTraceniaZasobu();
+    testPrawidlowegoPrzypisaniaZasobu();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 #include <iostream>
 #include <cstring>
 #include <iomanip>
@@ -344,14 +547,14 @@ Smartfon konwertujNaSmartfon(const Telefon& telefon, const SystemOperacyjny& sys
 }
 
 
+*/
 
 
 
 
 
 
-
-
+/*
 
 //WERSJA 3 S6
 
@@ -633,3 +836,4 @@ int main() {
 
     return 0;
 }
+*/
