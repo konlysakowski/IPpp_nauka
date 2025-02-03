@@ -1,35 +1,9 @@
 ﻿  zbior.cpp
-C:\Users\konra\Downloads\zbior.cpp(22,9): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\konra\Downloads\zbior.cpp(34,17): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\konra\Downloads\zbior.cpp(52,19): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c1xx : fatal  error C1083: Cannot open source file: '..\..\..\..\Downloads\zbior.cpp': No such file or directory
   main.cpp
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(19,3): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(41,3): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(152,17): error C2665: 'KontoBankowe::KontoBankowe': no overloaded function could convert all the argument types
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(67,2): message : could be 'KontoBankowe::KontoBankowe(const char *,double,Aktywnosc,Klient *)'
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(152,17): message : 'KontoBankowe::KontoBankowe(const char *,double,Aktywnosc,Klient *)': cannot convert argument 4 from 'Klient' to 'Klient *'
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(152,77): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(152,17): message : while trying to match the argument list '(const char [27], double, Aktywnosc, Klient)'
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(153,17): error C2665: 'KontoBankowe::KontoBankowe': no overloaded function could convert all the argument types
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(67,2): message : could be 'KontoBankowe::KontoBankowe(const char *,double,Aktywnosc,Klient *)'
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(153,17): message : 'KontoBankowe::KontoBankowe(const char *,double,Aktywnosc,Klient *)': cannot convert argument 4 from 'Klient' to 'Klient *'
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(153,78): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(153,17): message : while trying to match the argument list '(const char [27], double, Aktywnosc, Klient)'
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(178,1): error C2011: 'Klient': 'class' type redefinition
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(12,7): message : see declaration of 'Klient'
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(269,14): error C2027: use of undefined type 'Klient'
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(12,7): message : see declaration of 'Klient'
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(271,69): error C2355: 'this': can only be referenced inside non-static member functions or non-static data member initializers
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(271,15): error C2440: '<function-style-cast>': cannot convert from 'initializer list' to 'konto_bankowe'
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(271,15): message : 'konto_bankowe::konto_bankowe': function does not take 3 arguments
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(271,15): message : while trying to match the argument list '(const char [27], aktywnosc, int)'
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(310,5): error C2084: function 'int main(void)' already has a body
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(148,5): message : see previous definition of 'main'
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(410,3): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(431,3): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(438,3): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(456,3): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(524,12): fatal  error C1075: '{': no matching token found
+C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(45,9): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(74,15): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main.cpp(131,15): warning C4553: '==': result of expression not used; did you intend '='?
   main2.cpp
 C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(16,3): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
 C:\Users\konra\source\repos\konlysakowski\IP_PI_DaJu\main2.cpp(186,9): error C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
